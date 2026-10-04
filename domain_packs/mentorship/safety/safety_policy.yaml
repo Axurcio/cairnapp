@@ -1,0 +1,20 @@
+safety_policy:
+  id: mentorship_sample_safety
+  version: 1.0.0
+  descriptive_only: false
+  prohibited_next_actions: []
+  prohibited_claims:
+    - id: legal_advice
+      category: legal_advice
+      patterns: ["\\byou should (sue|file a (lawsuit|claim))\\b", "\\bthis is (illegal|unlawful)\\b"]
+    - id: judgement_of_others
+      category: judgement
+      patterns: ["\\byour (manager|boss) is (wrong|biased|discriminating)\\b"]
+  escalation_triggers:
+    - id: crisis
+      patterns: ["\\bsuicid", "\\bkill myself\\b", "\\bself[- ]harm"]
+      guidance_id: crisis_support
+      reason: mentee mentioned a possible crisis
+  escalation_template: "Thank you for telling me."
+  human_review_required_categories: []
+  safe_fallback_text: "Thanks for sharing that. I've made a note of it."

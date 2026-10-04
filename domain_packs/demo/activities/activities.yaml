@@ -1,0 +1,8 @@
+activities:
+  - id: weekly_reflection
+    version: 1.0.0
+    title: Weekly reflection
+    intent: Invite a short written reflection on the week's reading.
+    template: "Would you like to write a few sentences about what you've read this week?"
+    burden: 2
+    cooldown_hours: 24

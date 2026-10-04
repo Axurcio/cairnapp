@@ -1,0 +1,20 @@
+# Local hooks run through uv, so no hook repositories need to be downloaded.
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: uv run ruff check --fix
+        language: system
+        types: [python]
+      - id: ruff-format
+        name: ruff format
+        entry: uv run ruff format
+        language: system
+        types: [python]
+      - id: validate-domain-packs
+        name: validate domain packs
+        entry: uv run python -c "from pathlib import Path; from cairn.domain_packs.registry import DomainPackRegistry as R; print([p.id for p in R.from_directory(Path('domain_packs')).all()])"
+        language: system
+        files: ^domain_packs/
+        pass_filenames: false

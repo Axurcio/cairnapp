@@ -1,0 +1,212 @@
+# Cairn local development stack.
+#
+#   docker compose up -d          # everything; no external credentials required
+#                                 # website: http://localhost:3000 (after `make seed`)
+#   docker compose ps             # all services report healthy
+#
+# Every published port and credential can be overridden from the shell or a .env
+# file (see .env.example). Defaults are obviously local-only; never reuse them.
+
+name: cairn
+
+x-cairn-env: &cairn-env
+  CAIRN_ENV: local
+  CAIRN_DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-cairn}:${POSTGRES_PASSWORD:-cairn_local_dev_only}@postgres:5432/${POSTGRES_DB:-cairn}
+  CAIRN_AI_PROVIDER: ${CAIRN_AI_PROVIDER:-mock}
+  CAIRN_RENDERER: ${CAIRN_RENDERER:-template}
+  CAIRN_OPENAI_BASE_URL: ${CAIRN_OPENAI_BASE_URL:-https://api.openai.com/v1}
+  CAIRN_OPENAI_API_KEY: ${CAIRN_OPENAI_API_KEY:-}
+  CAIRN_OPENAI_MODEL: ${CAIRN_OPENAI_MODEL:-gpt-4o-mini}
+  CAIRN_CONTEXT_PROVIDER: ${CAIRN_CONTEXT_PROVIDER:-graphiti}
+  CAIRN_GRAPHITI_MODE: ${CAIRN_GRAPHITI_MODE:-episodes}
+  CAIRN_NEO4J_URI: bolt://neo4j:7687
+  CAIRN_NEO4J_USER: neo4j
+  CAIRN_NEO4J_PASSWORD: ${NEO4J_PASSWORD:-cairn_local_dev_only}
+  CAIRN_GUARDRAIL_PROVIDER: ${CAIRN_GUARDRAIL_PROVIDER:-noop}
+  CAIRN_EVIDENCE_STORE: minio
+  CAIRN_MINIO_ENDPOINT: minio:9000
+  CAIRN_MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-cairn}
+  CAIRN_MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-cairn_local_dev_only}
+  CAIRN_MINIO_BUCKET: ${MINIO_BUCKET:-cairn-evidence}
+  CAIRN_WORKFLOW_DISPATCHER: temporal
+  CAIRN_TEMPORAL_ADDRESS: temporal:7233
+  CAIRN_TEMPORAL_NAMESPACE: default
+  CAIRN_TEMPORAL_TASK_QUEUE: cairn-journeys
+  CAIRN_LOG_LEVEL: ${CAIRN_LOG_LEVEL:-INFO}
+  CAIRN_LOG_JSON: "true"
+  GRAPHITI_TELEMETRY_ENABLED: "false"
+
+x-cairn-app: &cairn-app
+  image: cairn/app:local
+  build:
+    context: .
+    dockerfile: apps/api/Dockerfile
+    args:
+      CAIRN_EXTRAS: ${CAIRN_EXTRAS:-}
+  environment: *cairn-env
+  restart: unless-stopped
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-cairn}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cairn_local_dev_only}
+      POSTGRES_DB: ${POSTGRES_DB:-cairn}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - cairn-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  neo4j:
+    # Graphiti's development graph backend. Holds DERIVED context only.
+    image: neo4j:5.26-community
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:-cairn_local_dev_only}
+      NEO4J_server_memory_heap_max__size: ${NEO4J_HEAP_MAX:-1G}
+      NEO4J_server_memory_pagecache_size: ${NEO4J_PAGECACHE:-512M}
+    ports:
+      - "${NEO4J_HTTP_PORT:-7474}:7474"
+      - "${NEO4J_BOLT_PORT:-7687}:7687"
+    volumes:
+      - cairn-neo4j-data:/data
+      - cairn-neo4j-logs:/logs
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:7474 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 40
+      start_period: 20s
+    restart: unless-stopped
+
+  temporal:
+    # Temporal dev server (SQLite persisted to a volume). Production uses a real cluster.
+    image: temporalio/temporal:${TEMPORAL_VERSION:-1.9.1}
+    command:
+      - server
+      - start-dev
+      - --ip=0.0.0.0
+      - --headless
+      - --db-filename=/home/temporal/temporal.db
+      - --namespace=default
+    ports:
+      - "${TEMPORAL_PORT:-7233}:7233"
+    volumes:
+      - cairn-temporal-data:/home/temporal
+    healthcheck:
+      test: ["CMD", "temporal", "operator", "cluster", "health", "--address", "localhost:7233"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 5s
+    restart: unless-stopped
+
+  temporal-ui:
+    image: temporalio/ui:${TEMPORAL_UI_VERSION:-2.55.0}
+    environment:
+      TEMPORAL_ADDRESS: temporal:7233
+      TEMPORAL_CORS_ORIGINS: http://localhost:${TEMPORAL_UI_PORT:-8233}
+    ports:
+      - "${TEMPORAL_UI_PORT:-8233}:8080"
+    depends_on:
+      temporal:
+        condition: service_healthy
+    restart: unless-stopped
+
+  minio:
+    # Community build of MinIO (official images are no longer published).
+    # Any S3-compatible store works behind EvidenceStore; override MINIO_IMAGE to swap.
+    image: ${MINIO_IMAGE:-pgsty/minio:RELEASE.2026-08-04T00-00-00Z}
+    command: ["server", "/data", "--console-address", ":9001"]
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-cairn}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-cairn_local_dev_only}
+    ports:
+      - "${MINIO_API_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - cairn-minio-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:9000/minio/health/live"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  migrate:
+    # One-shot: canonical schema (Alembic), then derived-store indices (Graphiti).
+    <<: *cairn-app
+    command: ["sh", "-c", "alembic upgrade head && python -m cairn.context.bootstrap"]
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      neo4j:
+        condition: service_healthy
+
+  api:
+    <<: *cairn-app
+    ports:
+      - "${CAIRN_API_PORT:-8000}:8000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      neo4j:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      temporal:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+  web:
+    # The website (apps/web). nginx serves the build and proxies /v1 to the api, so the
+    # site and API share one origin and the session cookie needs no CORS.
+    image: cairn/web:local
+    build:
+      context: apps/web
+      args:
+        # Lists the SYNTHETIC demo accounts (from `make seed`) on the sign-in page.
+        VITE_DEMO_ACCOUNTS: ${CAIRN_WEB_DEMO_ACCOUNTS:-true}
+    ports:
+      - "${CAIRN_WEB_PORT:-3000}:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8080/"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    restart: unless-stopped
+
+  worker:
+    <<: *cairn-app
+    command: ["python", "-m", "cairn.workflows.worker"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      neo4j:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      temporal:
+        condition: service_healthy
+
+volumes:
+  cairn-postgres-data:
+  cairn-neo4j-data:
+  cairn-neo4j-logs:
+  cairn-temporal-data:
+  cairn-minio-data:

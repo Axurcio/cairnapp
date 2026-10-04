@@ -1,0 +1,9 @@
+planner:
+  version: 1.0.0
+  action_priority: [ESCALATE, ASK_QUESTION, REQUEST_ACTIVITY, ACKNOWLEDGE, END_SESSION, WAIT]
+  max_questions_per_session: 6
+  session_window_minutes: 120
+  daily_burden_budget: 10
+  default_acknowledgement: "Thanks for sharing that. I've made a note of it."
+  end_session_template: "That's a good place to pause. Let's continue next time."
+  follow_up_after_hours: 168

@@ -1,0 +1,8 @@
+memory:
+  version: 1.0.0
+  project_event_types: [participant.message]
+  project_observation_summaries: true
+  recall_limit: 5
+  entity_hints:
+    Symptom: A participant-described physical experience (descriptive only).
+    Activity: Something the participant was doing.

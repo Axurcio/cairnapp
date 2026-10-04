@@ -1,0 +1,9 @@
+planner:
+  version: 1.0.0
+  action_priority: [ESCALATE, ASK_QUESTION, REQUEST_EVIDENCE, REQUEST_ACTIVITY, ACKNOWLEDGE, END_SESSION, WAIT]
+  max_questions_per_session: 8
+  session_window_minutes: 180
+  daily_burden_budget: 12
+  default_acknowledgement: "Thank you for sharing that. I've made a note of it."
+  end_session_template: "Thank you - that's plenty for now. We can pick this up another time."
+  follow_up_after_hours: 72

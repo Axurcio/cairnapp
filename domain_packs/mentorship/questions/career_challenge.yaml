@@ -1,0 +1,30 @@
+question_protocol:
+  id: career_challenge_questions
+  version: 1.0.0
+  questions:
+    - id: recent_project_example
+      observation_type: career_challenge
+      collects: recent_example
+      intent: Ask for the most recent concrete example of a project the mentee wanted to lead but did not get.
+      template: "Can you think of the most recent project you wanted to lead but weren't given the opportunity?"
+      validation: { type: string }
+      priority: 10
+      burden: 1
+
+    - id: career.desired_outcome
+      observation_type: career_challenge
+      collects: desired_outcome
+      intent: Ask what a good outcome would look like for the mentee in the next few months.
+      template: "What would a good outcome look like for you over the next few months?"
+      validation: { type: string }
+      priority: 20
+      burden: 1
+
+    - id: career.perceived_blocker
+      observation_type: career_challenge
+      collects: perceived_blocker
+      intent: Ask what the mentee thinks is getting in the way.
+      template: "What do you think is getting in the way?"
+      validation: { type: string }
+      priority: 30
+      burden: 1

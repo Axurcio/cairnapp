@@ -1,0 +1,28 @@
+# NeMo Guardrails configuration for Cairn (defence-in-depth only).
+#
+# The active rails are deterministic custom actions (actions.py), so this config
+# runs WITHOUT an LLM. NeMo here never decides authentication, tenancy, consent,
+# authorization, data residency or permissions - Cairn enforces those first.
+#
+# To add LLM self-check rails, configure a model and enable the self-check flows:
+#
+# models:
+#   - type: main
+#     engine: openai
+#     model: gpt-4o-mini
+#
+# rails:
+#   input:
+#     flows: [cairn check input, self check input]
+#   output:
+#     flows: [cairn check output, self check output]
+#
+# The prompts for those flows live in prompts.yml.
+
+rails:
+  input:
+    flows:
+      - cairn check input
+  output:
+    flows:
+      - cairn check output

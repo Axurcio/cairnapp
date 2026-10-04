@@ -1,0 +1,9 @@
+report_template:
+  id: reading_summary
+  version: 1.0.0
+  title: Reading summary
+  disclaimer: Demo data.
+  sections:
+    - title: Sessions
+      observation_type: reading_session
+      fields: [genre, minutes, enjoyment, favourite_line]

@@ -1,0 +1,49 @@
+response_policy:
+  id: hand_shaking_followup
+  version: 1.0.0
+  description: Collect a descriptive picture of a reported shaking episode, then record it.
+
+  trigger:
+    observation_type: hand_shaking
+
+  required_fields:
+    - duration
+    - severity
+    - frequency
+    - activity_context
+    - functional_impact
+
+  priority:
+    - duration
+    - onset_side
+    - severity
+    - frequency
+    - activity_context
+    - functional_impact
+
+  branches:
+    - id: both_sides
+      when: { field: side, op: eq, value: both }
+      add_required: [onset_side]
+
+  acknowledgement:
+    on_new_observation: "Thanks for telling me."
+
+  completion:
+    action: acknowledge_and_record
+    response_template_id: recorded
+    guidance_ids: [note_when_shaking_occurs]
+
+  templates:
+    - id: recorded
+      intent: Confirm the details have been recorded, without interpretation.
+      text: "Thank you - I've noted all of that."
+
+  safety:
+    prohibited_topics: [diagnosis, treatment_recommendation, prognosis]
+    requires_approved_guidance: true
+
+  llm_variation:
+    allowed: true
+    tone: warm
+    max_sentences: 2

@@ -1,0 +1,16 @@
+schema_version: "1"
+id: mentorship
+name: Mentorship and career development (SAMPLE)
+version: 0.1.0
+description: >
+  Sample configuration for a structured mentoring journey: capture career challenges
+  with concrete examples, notice recurring blockers, and suggest reflective activities.
+classification: non_clinical
+regulatory_profile: general
+synthetic_sample: true
+terminology:
+  participant: mentee
+  journey: mentoring journey
+  observation: challenge
+default_report_template: mentoring_summary
+owners: ["cairn-platform-team"]

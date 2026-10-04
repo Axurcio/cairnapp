@@ -1,0 +1,25 @@
+# Approved guidance. Cairn may only ever say guidance that is listed here, verbatim.
+guidance:
+  - id: note_when_shaking_occurs
+    version: 1.0.0
+    category: evidence_gathering
+    text: "It may be useful to note when the shaking occurs and what you were doing at the time."
+    approved: true
+    human_reviewed: false
+    notes: Neutral evidence-gathering prompt from the scaffold brief. Not clinical advice.
+
+  - id: contact_care_team
+    version: 1.0.0
+    category: safety_signposting
+    text: "If you are worried about how you are feeling, or if this is urgent, please contact your care team or local emergency services."
+    approved: true
+    human_reviewed: false
+    notes: SAMPLE signposting text. The deploying organisation must review it before real use.
+
+  - id: example_unreviewed_clinical_tip
+    version: 1.0.0
+    category: clinical_guidance
+    text: "Placeholder clinical guidance - intentionally unusable until human-reviewed."
+    approved: true
+    human_reviewed: false
+    notes: Demonstrates that clinical_guidance requires human review; SafetyPolicy rejects it.

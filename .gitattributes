@@ -1,0 +1,34 @@
+# Normalise line endings: LF in the repository and in the working tree on every OS.
+# This matters because shell scripts, Dockerfiles and YAML are executed inside Linux
+# containers, where CRLF breaks them (e.g. "bad interpreter: /bin/bash^M").
+* text=auto eol=lf
+
+# Explicit LF for files that must never be CRLF.
+*.sh text eol=lf
+*.py text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.toml text eol=lf
+*.md text eol=lf
+*.ini text eol=lf
+*.mako text eol=lf
+*.co text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+Makefile text eol=lf
+Dockerfile text eol=lf
+.dockerignore text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+uv.lock text eol=lf -diff linguist-generated
+
+# Binary files: never touched.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary

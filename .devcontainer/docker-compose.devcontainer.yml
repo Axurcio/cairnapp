@@ -1,0 +1,57 @@
+# Dev Container overlay. Used together with ../docker-compose.yml, so relative
+# paths here resolve from the repository root (the first compose file's directory).
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    image: cairn/devcontainer:local
+    command: ["sleep", "infinity"]
+    init: true
+    user: vscode
+    volumes:
+      - .:/workspace:cached
+      # Container-only virtualenv so it never clashes with a host .venv.
+      - cairn-dev-venv:/workspace/.venv
+      - cairn-dev-uv-cache:/home/vscode/.cache/uv
+      - cairn-dev-history:/commandhistory
+      # Persist Claude Code / Codex CLI auth + config across rebuilds.
+      - cairn-dev-claude-config:/home/vscode/.claude
+      - cairn-dev-codex-config:/home/vscode/.codex
+    environment:
+      CAIRN_IN_DEVCONTAINER: "1"
+      CAIRN_ENV: local
+      # ---- Agentic CLIs (Claude Code, OpenAI Codex) ----
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      CAIRN_DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-cairn}:${POSTGRES_PASSWORD:-cairn_local_dev_only}@postgres:5432/${POSTGRES_DB:-cairn}
+      CAIRN_AI_PROVIDER: ${CAIRN_AI_PROVIDER:-mock}
+      CAIRN_RENDERER: ${CAIRN_RENDERER:-template}
+      CAIRN_OPENAI_API_KEY: ${CAIRN_OPENAI_API_KEY:-}
+      CAIRN_CONTEXT_PROVIDER: ${CAIRN_CONTEXT_PROVIDER:-graphiti}
+      CAIRN_GRAPHITI_MODE: ${CAIRN_GRAPHITI_MODE:-episodes}
+      CAIRN_NEO4J_URI: bolt://neo4j:7687
+      CAIRN_NEO4J_PASSWORD: ${NEO4J_PASSWORD:-cairn_local_dev_only}
+      CAIRN_EVIDENCE_STORE: minio
+      CAIRN_MINIO_ENDPOINT: minio:9000
+      CAIRN_MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-cairn}
+      CAIRN_MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-cairn_local_dev_only}
+      CAIRN_WORKFLOW_DISPATCHER: temporal
+      CAIRN_TEMPORAL_ADDRESS: temporal:7233
+      CAIRN_LOG_JSON: "false"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      neo4j:
+        condition: service_healthy
+      temporal:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+
+volumes:
+  cairn-dev-venv:
+  cairn-dev-uv-cache:
+  cairn-dev-history:
+  cairn-dev-claude-config:
+  cairn-dev-codex-config:

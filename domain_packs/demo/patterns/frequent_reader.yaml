@@ -1,0 +1,9 @@
+pattern:
+  id: frequent_reader
+  version: 1.0.0
+  algorithm: occurrence_count
+  observation_type: reading_session
+  window_days: 7
+  minimum_occurrences: 3
+  action:
+    suggest_next_action: weekly_reflection

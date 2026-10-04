@@ -1,0 +1,37 @@
+observation:
+  observation_type: reading_session
+  version: 1.0.0
+  description: A reading session reported by the participant.
+  fields:
+    genre:
+      type: enum
+      values: [fiction, nonfiction, poetry]
+      synonyms:
+        fiction: [novel, story]
+        nonfiction: [biography, history, non-fiction]
+        poetry: [poem, poems]
+      label: Genre
+    minutes:
+      type: integer
+      minimum: 1
+      maximum: 1440
+      label: Minutes read
+    enjoyment:
+      type: integer
+      minimum: 0
+      maximum: 10
+      label: Enjoyment (0-10)
+    favourite_line:
+      type: string
+      max_length: 500
+      label: Favourite line
+    shared_with_group:
+      type: boolean
+      label: Shared with reading group
+  mock_extraction:
+    trigger_patterns: ["\\bread(ing)?\\b", "\\bbook\\b", "\\bpoems?\\b", "\\bnovel\\b"]
+    field_patterns:
+      genre:
+        - { pattern: "\\bpo(em|ems|etry)\\b", value: poetry }
+        - { pattern: "\\b(novel|story)\\b", value: fiction }
+        - { pattern: "\\b(biography|history|non-?fiction)\\b", value: nonfiction }

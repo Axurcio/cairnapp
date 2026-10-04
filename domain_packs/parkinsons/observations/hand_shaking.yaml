@@ -1,0 +1,63 @@
+observation:
+  observation_type: hand_shaking
+  version: 1.0.0
+  description: Participant-reported shaking of a body part, captured descriptively.
+  fields:
+    body_location:
+      type: enum
+      values: [hand, arm, leg, jaw, head, other]
+      label: Body location
+    side:
+      type: enum
+      values: [left, right, both]
+      label: Side
+    onset_side:
+      type: enum
+      values: [left, right, unsure]
+      synonyms:
+        unsure: ["not sure", "don't know", "can't remember"]
+      label: Side first noticed
+    duration:
+      type: duration
+      description: How long the participant has noticed it (ISO-8601, e.g. P3M).
+      label: Noticed for
+    severity:
+      type: integer
+      minimum: 0
+      maximum: 10
+      description: Participant's own 0-10 rating of how noticeable it is.
+      label: Self-rated noticeability (0-10)
+    frequency:
+      type: enum
+      values: [occasionally, weekly, daily, constant]
+      synonyms:
+        occasionally: ["now and then", "sometimes", "rarely", "once in a while"]
+        weekly: ["few times a week", "a few times a week", "every week"]
+        daily: ["every day", "most days", "each day"]
+        constant: ["all the time", "constantly", "most of the time", "always"]
+      label: How often
+    activity_context:
+      type: string
+      max_length: 500
+      label: Usually noticed when
+    functional_impact:
+      type: string
+      max_length: 500
+      label: Effect on everyday tasks
+  # Used ONLY by MockAIProvider so the stack runs without an external model.
+  mock_extraction:
+    trigger_patterns:
+      - "\\bshak(y|ing|es|e)\\b"
+      - "\\btrembl(e|es|ing|y)\\b"
+      - "\\btremor\\b"
+    field_patterns:
+      side:
+        - { pattern: "\\bboth\\b", value: both }
+        - { pattern: "\\bright\\b", value: right }
+        - { pattern: "\\bleft\\b", value: left }
+      body_location:
+        - { pattern: "\\bhands?\\b", value: hand }
+        - { pattern: "\\barms?\\b", value: arm }
+        - { pattern: "\\blegs?\\b", value: leg }
+        - { pattern: "\\bjaw\\b", value: jaw }
+        - { pattern: "\\bhead\\b", value: head }

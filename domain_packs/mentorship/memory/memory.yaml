@@ -1,0 +1,8 @@
+memory:
+  version: 1.0.0
+  project_event_types: [participant.message, assistant.message]
+  project_observation_summaries: true
+  recall_limit: 5
+  entity_hints:
+    Project: A piece of work the mentee wanted to lead or contribute to.
+    Person: A colleague or decision-maker the mentee mentions.

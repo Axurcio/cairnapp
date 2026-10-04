@@ -1,0 +1,46 @@
+observation:
+  observation_type: career_challenge
+  version: 1.0.0
+  description: A workplace or career challenge described by the mentee.
+  fields:
+    topic:
+      type: enum
+      values: [leadership, communication, visibility, skills, wellbeing_at_work, other]
+      label: Topic
+    issue:
+      type: enum
+      values: [project_opportunity, feedback, recognition, conflict, workload, harassment_or_discrimination, other]
+      label: Issue
+    goal:
+      type: enum
+      values: [greater_responsibility, skill_growth, recognition, better_relationships, other]
+      label: Goal
+    recent_example:
+      type: string
+      max_length: 1000
+      label: Recent example
+    desired_outcome:
+      type: string
+      max_length: 1000
+      label: Desired outcome
+    perceived_blocker:
+      type: string
+      max_length: 1000
+      label: Perceived blocker
+  mock_extraction:
+    trigger_patterns:
+      - "\\boverlooked\\b"
+      - "\\bpassed over\\b"
+      - "\\bnot (being )?(picked|chosen|considered)\\b"
+      - "\\bharass"
+      - "\\bdiscriminat"
+      - "\\bbullied\\b"
+    field_patterns:
+      issue:
+        # Listed first so it always wins: this issue is handled by a prohibited rule.
+        - { pattern: "\\b(harass|discriminat|bullied)", value: harassment_or_discrimination }
+        - { pattern: "\\bprojects?\\b", value: project_opportunity }
+      topic:
+        - { pattern: "\\b(overlooked|passed over|lead)\\b", value: leadership }
+      goal:
+        - { pattern: "\\b(overlooked|passed over|projects?)\\b", value: greater_responsibility }

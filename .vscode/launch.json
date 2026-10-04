@@ -1,0 +1,37 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Cairn: API (uvicorn)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["cairn.api.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"],
+      "env": { "CAIRN_LOG_JSON": "false" },
+      "justMyCode": true
+    },
+    {
+      "name": "Cairn: Temporal worker",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "cairn.workflows.worker",
+      "env": { "CAIRN_LOG_JSON": "false" },
+      "justMyCode": true
+    },
+    {
+      "name": "Cairn: Seed demo data",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/seed_demo.py",
+      "justMyCode": true
+    },
+    {
+      "name": "Pytest: current file",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["${file}", "-v"],
+      "justMyCode": false
+    }
+  ]
+}

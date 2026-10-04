@@ -1,0 +1,12 @@
+report_template:
+  id: symptom_evidence_summary
+  version: 1.0.0
+  title: Participant-reported evidence summary
+  disclaimer: >
+    SYNTHETIC SAMPLE. This summary restates what the participant reported. It is not
+    a diagnosis, an interpretation, or medical advice.
+  sections:
+    - title: Reported shaking
+      observation_type: hand_shaking
+      fields: [body_location, side, duration, severity, frequency, activity_context, functional_impact]
+      empty_text: No shaking reports recorded.

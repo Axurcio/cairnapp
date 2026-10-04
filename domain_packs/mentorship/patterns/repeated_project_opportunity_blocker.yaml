@@ -1,0 +1,11 @@
+pattern:
+  id: repeated_project_opportunity_blocker
+  version: 1.0.0
+  description: The mentee has raised being overlooked for projects repeatedly.
+  algorithm: occurrence_count
+  observation_type: career_challenge
+  where: { field: issue, op: eq, value: project_opportunity }
+  window_days: 60
+  minimum_occurrences: 3
+  action:
+    suggest_next_action: explore_blocker

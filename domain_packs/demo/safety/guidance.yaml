@@ -1,0 +1,22 @@
+guidance:
+  - id: reading_tip
+    version: 1.0.0
+    category: general
+    text: "Short, regular reading sessions are easy to keep up."
+    approved: true
+  - id: seek_help
+    version: 1.0.0
+    category: signposting
+    text: "If this is an emergency, please contact local emergency services."
+    approved: true
+  - id: unreviewed_expert_tip
+    version: 1.0.0
+    category: expert_advice
+    text: "An expert tip that has not been reviewed."
+    approved: true
+    human_reviewed: false
+  - id: draft_tip
+    version: 0.1.0
+    category: general
+    text: "A draft tip that was never approved."
+    approved: false

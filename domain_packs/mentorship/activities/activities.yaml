@@ -1,0 +1,10 @@
+activities:
+  - id: explore_blocker
+    version: 1.0.0
+    title: Explore the blocker
+    intent: Invite the mentee to list recent missed opportunities and what decision-makers may have seen.
+    template: >
+      When you have ten minutes, try listing the last three projects you were passed over
+      for and what you think the decision-makers saw. We can look at the list together next time.
+    burden: 2
+    cooldown_hours: 72

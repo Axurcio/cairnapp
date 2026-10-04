@@ -1,0 +1,20 @@
+safety_policy:
+  id: demo_safety
+  version: 1.0.0
+  descriptive_only: false
+  prohibited_next_actions: [REQUEST_EVIDENCE]
+  prohibited_claims:
+    - id: spoiler
+      category: spoiler
+      patterns: ["\\bthe ending is\\b"]
+    - id: treatment_recommendation
+      category: treatment_recommendation
+      patterns: ["\\byou should (take|start|stop|increase)\\b", "\\bmedication\\b"]
+  escalation_triggers:
+    - id: emergency
+      patterns: ["\\bemergency\\b"]
+      guidance_id: seek_help
+      reason: participant mentioned an emergency
+  escalation_template: "Thank you for telling me."
+  human_review_required_categories: [expert_advice]
+  safe_fallback_text: "Thanks - noted."

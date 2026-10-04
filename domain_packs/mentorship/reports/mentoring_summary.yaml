@@ -1,0 +1,9 @@
+report_template:
+  id: mentoring_summary
+  version: 1.0.0
+  title: Mentoring journey summary
+  disclaimer: SYNTHETIC SAMPLE. A record of what the mentee shared, in their own words.
+  sections:
+    - title: Career challenges raised
+      observation_type: career_challenge
+      fields: [topic, issue, goal, recent_example, desired_outcome, perceived_blocker]

@@ -1,0 +1,11 @@
+pattern:
+  id: frequent_hand_shaking_reports
+  version: 1.0.0
+  description: Several shaking reports in two weeks - invite a simple diary (evidence only).
+  algorithm: occurrence_count
+  observation_type: hand_shaking
+  window_days: 14
+  minimum_occurrences: 3
+  action:
+    suggest_next_action: shaking_diary
+    action_type: REQUEST_ACTIVITY

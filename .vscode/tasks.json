@@ -1,0 +1,25 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    { "label": "Cairn: Compose Up", "type": "shell", "command": "make up", "problemMatcher": [] },
+    { "label": "Cairn: Compose Down", "type": "shell", "command": "make down", "problemMatcher": [] },
+    { "label": "Cairn: Compose Logs", "type": "shell", "command": "make logs", "isBackground": true, "problemMatcher": [] },
+    {
+      "label": "Cairn: API Tests",
+      "type": "shell",
+      "command": "uv run pytest tests/unit/test_api_message_flow.py tests/unit/test_authorization.py -v",
+      "group": "test",
+      "problemMatcher": []
+    },
+    { "label": "Cairn: All Tests", "type": "shell", "command": "make test", "group": { "kind": "test", "isDefault": true }, "problemMatcher": [] },
+    { "label": "Cairn: Integration Tests", "type": "shell", "command": "make integration", "group": "test", "problemMatcher": [] },
+    { "label": "Cairn: Ruff", "type": "shell", "command": "make lint", "problemMatcher": [] },
+    { "label": "Cairn: Type Check", "type": "shell", "command": "make typecheck", "problemMatcher": [] },
+    { "label": "Cairn: Alembic Upgrade", "type": "shell", "command": "make migrate", "problemMatcher": [] },
+    { "label": "Cairn: Seed Demo Data", "type": "shell", "command": "make seed", "problemMatcher": [] },
+    { "label": "Cairn: Demo Flow", "type": "shell", "command": "make demo", "problemMatcher": [] },
+    { "label": "Cairn: Run API", "type": "shell", "command": "make api", "isBackground": true, "problemMatcher": [] },
+    { "label": "Cairn: Run Worker", "type": "shell", "command": "make worker", "isBackground": true, "problemMatcher": [] },
+    { "label": "Cairn: Run Website", "type": "shell", "command": "make web", "isBackground": true, "problemMatcher": [] }
+  ]
+}

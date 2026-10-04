@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "Cairn",
+    "slug": "cairn",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "extra": {
+      "apiUrl": "http://localhost:8000"
+    }
+  }
+}

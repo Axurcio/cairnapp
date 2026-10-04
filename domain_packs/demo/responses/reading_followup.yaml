@@ -1,0 +1,32 @@
+response_policy:
+  id: reading_followup
+  version: 1.2.0
+  trigger:
+    observation_type: reading_session
+  required_fields: [minutes, enjoyment]
+  priority: [minutes, enjoyment, favourite_line]
+  branches:
+    - id: poetry_line
+      when: { field: genre, op: eq, value: poetry }
+      add_required: [favourite_line]
+  prohibited_when:
+    - id: implausible_duration
+      when: { field: minutes, op: gt, value: 720 }
+      fallback_action: ACKNOWLEDGE
+      reason: reported duration is implausible; stop automated collection
+      response_template_id: implausible
+  acknowledgement:
+    on_new_observation: "Nice!"
+  completion:
+    action: acknowledge_and_record
+    response_template_id: logged
+    guidance_ids: [reading_tip]
+  templates:
+    - id: logged
+      intent: Confirm the session was logged.
+      text: "Logged - thanks for sharing."
+    - id: implausible
+      intent: Pause collection.
+      text: "Thanks - I'll leave that one there for now."
+  llm_variation:
+    allowed: false

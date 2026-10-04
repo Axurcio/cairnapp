@@ -1,0 +1,62 @@
+question_protocol:
+  id: hand_shaking_questions
+  version: 1.0.0
+  description: Questions that collect the fields of a hand_shaking report.
+  questions:
+    - id: hand_shaking.duration
+      observation_type: hand_shaking
+      collects: duration
+      intent: >
+        Ask how long the participant has noticed the hand shaking.
+      template: "How long have you noticed the shaking in your {side} {body_location}?"
+      fallback_template: "How long have you noticed the shaking?"
+      validation: { type: duration }
+      priority: 10
+      burden: 1
+
+    - id: hand_shaking.onset_side
+      observation_type: hand_shaking
+      collects: onset_side
+      intent: Ask which side the participant noticed the shaking on first.
+      template: "Which side did you notice it on first - left, right, or are you not sure?"
+      validation: { type: enum }
+      priority: 15
+      burden: 1
+
+    - id: hand_shaking.severity
+      observation_type: hand_shaking
+      collects: severity
+      intent: Ask the participant to rate how noticeable the shaking is from 0 to 10.
+      template: "On a scale from 0 to 10, how noticeable would you say it is?"
+      validation: { type: integer }
+      priority: 20
+      burden: 1
+
+    - id: hand_shaking.frequency
+      observation_type: hand_shaking
+      collects: frequency
+      intent: Ask how often the participant notices the shaking.
+      template: "How often do you notice it - occasionally, a few times a week, daily, or most of the time?"
+      validation: { type: enum }
+      priority: 30
+      burden: 1
+
+    - id: hand_shaking.activity_context
+      observation_type: hand_shaking
+      collects: activity_context
+      intent: Ask what the participant is usually doing when they notice the shaking.
+      template: "What are you usually doing when you notice it?"
+      validation: { type: string }
+      priority: 40
+      burden: 1
+
+    - id: hand_shaking.functional_impact
+      observation_type: hand_shaking
+      collects: functional_impact
+      intent: Ask whether the shaking makes any everyday tasks harder, and which.
+      template: "Does it make any everyday tasks harder? If so, which ones?"
+      validation: { type: string }
+      priority: 50
+      burden: 1
+      # When not to ask: the participant rated it as not noticeable at all.
+      skip_when: { field: severity, op: eq, value: 0 }

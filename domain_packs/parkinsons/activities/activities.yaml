@@ -1,0 +1,11 @@
+activities:
+  - id: shaking_diary
+    version: 1.0.0
+    title: Shaking diary
+    intent: Invite the participant to note when shaking occurs and what they were doing.
+    template: >
+      Over the next few days, would you be willing to jot down when you notice the
+      shaking and what you were doing at the time?
+    burden: 2
+    cooldown_hours: 72
+    evidence_capture_types: [diary_entry]

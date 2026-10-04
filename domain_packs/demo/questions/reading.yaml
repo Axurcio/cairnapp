@@ -1,0 +1,27 @@
+question_protocol:
+  id: reading_questions
+  version: 1.0.0
+  questions:
+    - id: reading.minutes
+      observation_type: reading_session
+      collects: minutes
+      intent: Ask roughly how many minutes the participant read for.
+      template: "About how many minutes did you spend reading?"
+      validation: { type: integer }
+      priority: 10
+    - id: reading.enjoyment
+      observation_type: reading_session
+      collects: enjoyment
+      intent: Ask how much the participant enjoyed it on a 0-10 scale.
+      template: "On a scale from 0 to 10, how much did you enjoy it?"
+      validation: { type: integer }
+      priority: 20
+    - id: reading.favourite_line
+      observation_type: reading_session
+      collects: favourite_line
+      intent: Ask for a line from what they read that stayed with the participant.
+      template: "Was there a line from the {genre} that stayed with you?"
+      fallback_template: "Was there a line that stayed with you?"
+      validation: { type: string }
+      priority: 30
+      skip_when: { field: enjoyment, op: lt, value: 3 }

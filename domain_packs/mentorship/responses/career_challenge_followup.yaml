@@ -1,0 +1,42 @@
+response_policy:
+  id: career_challenge_followup
+  version: 1.0.0
+  description: Ground a career challenge in a concrete example before exploring it.
+
+  trigger:
+    observation_type: career_challenge
+
+  required_fields:
+    - field: recent_example
+      question_id: recent_project_example
+    - desired_outcome
+    - perceived_blocker
+
+  priority: [recent_example, desired_outcome, perceived_blocker]
+
+  # A mentoring assistant must not coach someone through harassment or
+  # discrimination; it signposts to people who can act.
+  prohibited_when:
+    - id: harassment_or_discrimination
+      when: { field: issue, op: eq, value: harassment_or_discrimination }
+      fallback_action: ESCALATE
+      reason: harassment or discrimination is out of scope for automated mentoring
+      response_template_id: signpost_support
+      guidance_ids: [speak_to_trusted_contact]
+
+  completion:
+    action: acknowledge_and_record
+    response_template_id: noted
+
+  templates:
+    - id: noted
+      intent: Confirm the challenge has been captured.
+      text: "Thanks - that gives us a clear picture to work with."
+    - id: signpost_support
+      intent: Acknowledge and signpost to people who can act.
+      text: "Thank you for trusting me with this. It sounds like something to raise with someone who can act on it."
+
+  llm_variation:
+    allowed: true
+    tone: encouraging
+    max_sentences: 2

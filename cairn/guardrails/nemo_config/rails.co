@@ -1,0 +1,16 @@
+# Colang 1.0 flows. Each delegates to a deterministic action in actions.py.
+
+define flow cairn check input
+  $allowed = execute cairn_check_input(text=$user_message)
+  if not $allowed
+    bot refuse to respond
+    stop
+
+define flow cairn check output
+  $allowed = execute cairn_check_output(text=$bot_message)
+  if not $allowed
+    bot refuse to respond
+    stop
+
+define bot refuse to respond
+  "I'm not able to help with that here."

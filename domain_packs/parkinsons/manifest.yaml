@@ -1,0 +1,25 @@
+# SAMPLE Domain Pack - for development and architecture demonstration only.
+# It is conversation configuration, NOT medical advice, NOT a diagnostic tool,
+# and has NOT been clinically reviewed. Outputs must remain descriptive.
+schema_version: "1"
+id: parkinsons
+name: "Parkinson's evidence gathering (SAMPLE)"
+version: 0.1.0
+description: >
+  Sample configuration showing how Cairn gathers structured, participant-reported
+  evidence about movement symptoms over time. It never diagnoses, never interprets,
+  and never recommends treatment.
+classification: health
+regulatory_profile: descriptive_only
+synthetic_sample: true
+terminology:
+  participant: participant
+  journey: evidence journey
+  observation: report
+default_report_template: symptom_evidence_summary
+integrations:
+  - id: wearable_motion
+    kind: wearable
+    description: Placeholder for a future accelerometer integration (platform adapter, disabled).
+    enabled: false
+owners: ["cairn-platform-team"]

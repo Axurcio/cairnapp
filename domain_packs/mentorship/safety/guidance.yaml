@@ -1,0 +1,12 @@
+guidance:
+  - id: speak_to_trusted_contact
+    version: 1.0.0
+    category: signposting
+    text: "Consider speaking with your HR team, a trusted manager, or an independent advisory service about what happened."
+    approved: true
+  - id: crisis_support
+    version: 1.0.0
+    category: safety_signposting
+    text: "If you are in crisis or thinking about harming yourself, please contact local emergency services or a crisis line right away."
+    approved: true
+    notes: SAMPLE signposting text; replace with region-specific services before real use.
